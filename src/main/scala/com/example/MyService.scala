@@ -15,7 +15,7 @@ import spray.util._
 import akka.io.Tcp
 import java.net.InetSocketAddress
 
-class HttpLogger extends Actor with SprayActorLogging {
+class HttpLogger extends Actor with ActorLogging {
   def receive = {
     case (connected: InetSocketAddress, r: HttpRequest) => log.info(s"Http Request from $connected $r")
   }
@@ -24,7 +24,7 @@ class HttpLogger extends Actor with SprayActorLogging {
 class MyServiceActor extends MyService {
 }
 
-trait MyService extends Actor with SprayActorLogging {
+trait MyService extends Actor with ActorLogging {
   val httpLogger: ActorRef = context actorOf Props[HttpLogger]
 
   def receive = {
@@ -35,7 +35,7 @@ trait MyService extends Actor with SprayActorLogging {
   }
 }
 
-class ConnectionHandler(httpLogger: ActorRef, connected: InetSocketAddress) extends Actor with SprayActorLogging {
+class ConnectionHandler(httpLogger: ActorRef, connected: InetSocketAddress) extends Actor with ActorLogging {
   log.debug(s"Connection opened: $connected")
 
   def receive = {
@@ -61,10 +61,10 @@ class ConnectionHandler(httpLogger: ActorRef, connected: InetSocketAddress) exte
   }
 }
 
-class RequestHandler extends Actor with SprayActorLogging {
+class RequestHandler extends Actor with ActorLogging {
   import context._
   val httpBridge: ActorRef = IO(Http)
-  val authority = Uri.Authority(Uri.Host("localhost"), 80)
+  val authority = Uri.Authority(Uri.Host("www.google.com"), 80)
 
   def receive = created
   
@@ -72,7 +72,7 @@ class RequestHandler extends Actor with SprayActorLogging {
     case (requester: ActorRef, request: HttpRequest) =>
       val headers = request.headers.filter(_.lowercaseName != "host").filter(_.lowercaseName != "user-agent")
       val proxiedRequest = request.copy(uri = request.uri.copy("http", authority = authority), headers = headers)
-      httpBridge ! Http.HostConnectorSetup("localhost", port = 80)
+      httpBridge ! Http.HostConnectorSetup("www.google.com", port = 80)
       become(awaitingConnector(requester, proxiedRequest))
   }
 

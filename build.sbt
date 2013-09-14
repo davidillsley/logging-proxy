@@ -1,3 +1,7 @@
+import AssemblyKeys._ // put this at the top of the file
+
+assemblySettings
+
 name          := "logging-proxy"
 
 organization  := "com.example"
@@ -14,9 +18,9 @@ resolvers ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-  "io.spray"            %   "spray-can"     % "1.2-20130801",
-  "io.spray"            %   "spray-routing" % "1.2-20130801",
-  "io.spray"            %   "spray-testkit" % "1.2-20130801" % "test",
+  "io.spray"            %   "spray-can"     % "1.2-20130912",
+  "io.spray"            %   "spray-routing" % "1.2-20130912",
+  "io.spray"            %   "spray-testkit" % "1.2-20130912" % "test",
   "com.typesafe.akka"   %%  "akka-actor"    % "2.2.0",
   "com.typesafe.akka"   %%  "akka-testkit"  % "2.2.0" % "test",
   "org.specs2"          %%  "specs2"        % "1.14" % "test"
